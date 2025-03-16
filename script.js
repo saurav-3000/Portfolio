@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     })
   
-    // Animate skill bars
-    const skillBars = document.querySelectorAll(".skill-item")
+    // Enhanced Skill Bars Animation
+    const skillItems = document.querySelectorAll(".skill-item")
   
     // Function to check if element is in viewport
     function isInViewport(element) {
@@ -43,11 +43,35 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Function to animate skill bars
     function animateSkillBars() {
-      skillBars.forEach((skill) => {
+      skillItems.forEach((skill) => {
         if (isInViewport(skill)) {
           const level = skill.getAttribute("data-level")
           const progressBar = skill.querySelector(".skill-progress")
+          const percentageElement = skill.querySelector(".skill-percentage")
+  
           progressBar.style.width = `${level}%`
+  
+          // Animate percentage counter
+          if (percentageElement) {
+            const duration = 1500 // milliseconds
+            const start = 0
+            const end = Number.parseInt(level)
+            const range = end - start
+            const startTime = performance.now()
+  
+            function updateCounter(currentTime) {
+              const elapsedTime = currentTime - startTime
+              if (elapsedTime < duration) {
+                const currentValue = Math.round(start + range * (elapsedTime / duration))
+                percentageElement.textContent = `${currentValue}%`
+                requestAnimationFrame(updateCounter)
+              } else {
+                percentageElement.textContent = `${end}%`
+              }
+            }
+  
+            requestAnimationFrame(updateCounter)
+          }
         }
       })
     }
@@ -77,28 +101,20 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     })
   
-    // Add animation to project cards
-    const projectCards = document.querySelectorAll(".project-card")
+    // Reveal animations for sections
+    const revealElements = document.querySelectorAll(".reveal")
   
-    function animateProjectCards() {
-      projectCards.forEach((card) => {
-        if (isInViewport(card)) {
-          card.style.opacity = "1"
-          card.style.transform = "translateY(0)"
+    function revealOnScroll() {
+      revealElements.forEach((element) => {
+        if (isInViewport(element)) {
+          element.classList.add("active")
         }
       })
     }
   
-    // Set initial styles
-    projectCards.forEach((card) => {
-      card.style.opacity = "0"
-      card.style.transform = "translateY(20px)"
-      card.style.transition = "opacity 0.5s ease, transform 0.5s ease"
-    })
-  
     // Initial check and add scroll event listener
-    animateProjectCards()
-    window.addEventListener("scroll", animateProjectCards)
+    revealOnScroll()
+    window.addEventListener("scroll", revealOnScroll)
   })
   
   
